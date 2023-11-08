@@ -6,7 +6,8 @@ import pathlib
 import platform
 import sys
 import unittest.mock as __mock
-from typing import Final, Iterable, Set
+from typing import Iterable, Set
+from typing_extensions import Final
 
 from forcedimension_core.containers import VersionTuple
 
@@ -96,7 +97,8 @@ def _get_search_paths_unix(search_dirs: Iterable[str] = ()):
         platform_name = 'mac'
         compiler = 'clang'
 
-    if (libpath := _os_impl.environ.get('FDSDK')):
+    libpath = _os_impl.environ.get('FDSDK')
+    if libpath:
         lib_folder = _os_impl.path.realpath(
             _os_impl.path.join(
                 libpath,
@@ -105,14 +107,16 @@ def _get_search_paths_unix(search_dirs: Iterable[str] = ()):
                 f"{platform_name}-{machine}-{compiler}",  # noqa
             )
         )
-        # type: ignore
-        if (glob_res := _glob_impl.glob(f"{lib_folder}/{lib_file_glob}")):  # noqa
+
+        glob_res = _glob_impl.glob(f"{lib_folder}/{lib_file_glob}")
+        if glob_res:
             glob_res.sort()
             search_dirs.append(glob_res[-1])
 
     # Legacy support for the old environment variable
 
-    if (libpath := _os_impl.environ.get('FORCEDIM_SDK')):
+    libpath = _os_impl.environ.get('FORCEDIM_SDK')
+    if libpath:
         lib_folder = _os_impl.path.realpath(
             _os_impl.path.join(
                 libpath,
@@ -122,7 +126,8 @@ def _get_search_paths_unix(search_dirs: Iterable[str] = ()):
             )
         )
 
-        if (glob_res := _glob_impl.glob(f"{lib_folder}/{lib_file_glob}")):  # noqa
+        glob_res = _glob_impl.glob(f"{lib_folder}/{lib_file_glob}")
+        if glob_res:  # noqa
             glob_res.sort()
             search_dirs.append(glob_res[-1])
 
@@ -219,7 +224,8 @@ def load(
     if _should_mock() and not _test_load:
         return __mock.Mock()
 
-    if not (search_dirs := _get_search_paths(search_dirs, silent)):
+    search_dirs = _get_search_paths(search_dirs, silent)
+    if not search_dirs:
         return None
 
     for lib_path in search_dirs:
@@ -249,7 +255,9 @@ def load(
                 )
 
             return None
-        if (version := _get_version(lib)) < VERSION_TARGET:  # type: ignore
+
+        version = _get_version(lib)
+        if version  < VERSION_TARGET:  # type: ignore
             if not silent:
                 _sys_impl.stderr.write(
                     f"Invalid version. v{version} found "
@@ -266,13 +274,13 @@ def load(
 
     return None
 
-
-if (_libdrd_load := load()) is None:
+_libdrd_load = load()
+if _libdrd_load is None:
     raise ImportError(
         "There were problems loading libdrd. Check if you have it installed "
         "properly. For more information on installation consult: "
         ""
     )
-
-_libdrd = _libdrd_load
-_libdhd = _libdrd_load
+else:
+    _libdrd = _libdrd_load
+    _libdhd = _libdrd_load

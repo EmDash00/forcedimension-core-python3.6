@@ -7,14 +7,14 @@ from forcedimension_core.typing import (
 )
 
 
-def getDeltaEncoders(out: SupportsPtrs3[c_int], ID: int = -1) -> int:
+def getDeltaEncoders(out: SupportsPtrs3, ID: int = -1) -> int:
     """
     Read all encoders values of the DELTA structure.
 
     :param int ID:
         Device ID (see :ref:`multiple_devices` section for details).
 
-    :param SupportsPtrs3[ctypes.c_int] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the delta encoder values.
 
     :raises IndexError:
@@ -48,7 +48,7 @@ def getDeltaEncoders(out: SupportsPtrs3[c_int], ID: int = -1) -> int:
     return _runtime._libdhd.dhdGetDeltaEncoders(*out.ptrs, ID)
 
 
-def getWristEncoders(out: SupportsPtrs3[c_int], ID: int = -1) -> int:
+def getWristEncoders(out: SupportsPtrs3, ID: int = -1) -> int:
     """
     Read all encoders values of the wrist structure.
 
@@ -59,7 +59,7 @@ def getWristEncoders(out: SupportsPtrs3[c_int], ID: int = -1) -> int:
     the :ref:`device_types` section for more details.
 
 
-    :param SupportsPtrs3[ctypes.c_int] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the wrist encoder values.
 
     :param int ID:
@@ -96,7 +96,7 @@ def getWristEncoders(out: SupportsPtrs3[c_int], ID: int = -1) -> int:
 
 def deltaEncoderToPosition(
     enc: Array[int, int],
-    out: SupportsPtrs3[c_double],
+    out: SupportsPtrs3,
     ID: int = -1
 ) -> int:
     """
@@ -111,7 +111,7 @@ def deltaEncoderToPosition(
     :param int ID:
         Device ID (see :ref:`multiple_devices` section for details).
 
-    :param SupportsPtrs3[ctypes.c_double] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the position about the X, Y, and Z axes
         (in [m]).
 
@@ -156,7 +156,7 @@ def deltaEncoderToPosition(
 
 def deltaPositionToEncoder(
     pos: Array[int, float],
-    out: SupportsPtrs3[c_int],
+    out: SupportsPtrs3,
     ID: int = -1,
 ) -> int:
     """
@@ -171,7 +171,7 @@ def deltaPositionToEncoder(
     :param int ID:
         Device ID (see :ref:`multiple_devices` section for details).
 
-    :param SupportsPtrs3[ctypes.c_int] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the delta encoder values.
 
     :raises AttributeError:
@@ -216,7 +216,7 @@ def deltaPositionToEncoder(
 def deltaMotorToForce(
     mot: Array[int, int],
     enc: Array[int, int],
-    out: SupportsPtrs3[c_double],
+    out: SupportsPtrs3,
     ID: int = -1
 ) -> int:
     """
@@ -234,7 +234,7 @@ def deltaMotorToForce(
         ``enc2`` refer to encoder values on axis 0, 1, and 2,
         respectively.
 
-    :param SupportsPtrs3[ctypes.c_double] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the force applied to the end effector about
         the X, Y, and Z axes (in [N])
 
@@ -291,7 +291,7 @@ def deltaMotorToForce(
 def deltaForceToMotor(
     f: Array[int, float],
     enc: Array[int, int],
-    out: SupportsPtrs3[c_ushort],
+    out: SupportsPtrs3,
     ID=-1
 ) -> int:
     """
@@ -308,7 +308,7 @@ def deltaForceToMotor(
         Sequence of ``(enc0, enc1, enc2)`` where ``enc0``, ``enc1``, and
         ``enc2`` refer to encoder values on axis 0, 1, and 2, respectively.
 
-    :param SupportsPtrs3[ctypes.c_ushort] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the motor commands on axes 0, 1, and 2.
 
     :param int ID:
@@ -366,7 +366,7 @@ def deltaForceToMotor(
 
 def wristEncoderToOrientation(
     enc: Array[int, int],
-    out: SupportsPtrs3[c_double],
+    out: SupportsPtrs3,
     ID: int = -1,
 ) -> int:
     """
@@ -390,7 +390,7 @@ def wristEncoderToOrientation(
         ``enc2`` refer to wrist encoder values on the first, second, and
         third joint, respectively
 
-    :param SupportsPtrs3[ctypes.c_double] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the wrist end-effector orientation about the
         first, second, and third wrist joints (in [rad]).
 
@@ -437,7 +437,7 @@ def wristEncoderToOrientation(
 
 def wristOrientationToEncoder(
     orientation: Array[int, float],
-    out: SupportsPtrs3[c_int],
+    out: SupportsPtrs3,
     ID: int = -1,
 ) -> int:
     """
@@ -466,7 +466,7 @@ def wristOrientationToEncoder(
         wrist end effector orientation (in [rad]) around the X, Y, and Z axes,
         respectively.
 
-    :param SupportsPtrs3[ctypes.c_int] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the encoder values.
 
     :param int ID:
@@ -518,7 +518,7 @@ def wristOrientationToEncoder(
 def wristMotorToTorque(
     output: Array[int, int],
     enc: Array[int, int],
-    out: SupportsPtrs3[c_double],
+    out: SupportsPtrs3,
     ID: int = -1
 ) -> int:
     """
@@ -544,7 +544,7 @@ def wristMotorToTorque(
     :param int ID:
         Device ID (see :ref:`multiple_devices` section for details).
 
-    :param SupportsPtrs3[ctypes.c_double] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the torques applied to the wrist about the
         X, Y, and Z axes (in [Nm]).
 
@@ -601,7 +601,7 @@ def wristMotorToTorque(
 def wristTorqueToMotor(
     t: Array[int, float],
     enc: Array[int, int],
-    out: SupportsPtrs3[c_ushort],
+    out: SupportsPtrs3,
     ID: int = -1
 ) -> int:
     """
@@ -626,7 +626,7 @@ def wristTorqueToMotor(
         Sequence of ``(enc0, enc1, enc2)`` where ``enc0``, ``enc1``, and
         ``enc2`` refer to encoder values on axis 0, 1, and 2, respectively.
 
-    :param SupportsPtrs3[ctypes.c_ushort] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the wrist motor commands.
 
     :param int ID:
@@ -683,7 +683,7 @@ def wristTorqueToMotor(
 
 def gripperMotorToForce(
     cmd: int,
-    enc_wrist_grip: SupportsPtr[c_int],
+    enc_wrist_grip: SupportsPtr,
     out: c_double,
     ID: int = -1
 ) -> int:
@@ -700,7 +700,7 @@ def gripperMotorToForce(
     :param int output:
         Motor command on gripper axis.
 
-    :param SupportsPtr[c_int] enc_wrist_grip:
+    :param SupportsPtr enc_wrist_grip:
         Buffer which contains the encoder values about wrist joints 0, 1, and
         2 as well as the encoder value of the gripper.
 
@@ -738,13 +738,13 @@ def gripperMotorToForce(
     )
 
 
-def setMot(cmds: SupportsPtr[c_ushort], mask: int = 0xff, ID: int = -1) -> int:
+def setMot(cmds: SupportsPtr, mask: int = 0xff, ID: int = -1) -> int:
     """
     Program motor commands to a selection of motor channels.
     Particularly useful when using the generic controller
     directly, without a device model attached.
 
-    :param SupportsPtr[c_ushort] cmds:
+    :param SupportsPtr cmds:
         An input buffer to store the motor command values.
 
     :param int mask:
@@ -781,11 +781,11 @@ def setMot(cmds: SupportsPtr[c_ushort], mask: int = 0xff, ID: int = -1) -> int:
     return _runtime._libdhd.dhdSetMot(cmds.ptr, mask, ID)
 
 
-def setJointTorques(q: SupportsPtr[c_double], mask: int = 0xff, ID: int = -1):
+def setJointTorques(q: SupportsPtr, mask: int = 0xff, ID: int = -1):
     """
     Sets all joint torques on all active axes.
 
-    :param SupportsPtr[c_double] q:
+    :param SupportsPtr q:
         An input buffer to store the Joint torques for each
         degree-of-freedom (in [Nm]).
 
@@ -825,7 +825,7 @@ def setJointTorques(q: SupportsPtr[c_double], mask: int = 0xff, ID: int = -1):
 
 
 def preloadMot(
-    cmds: SupportsPtr[c_ushort], mask: int = 0xff, ID: int = -1
+    cmds: SupportsPtr, mask: int = 0xff, ID: int = -1
 ) -> int:
     """
     Program motor commands to a selection of motor channels.
@@ -834,7 +834,7 @@ def preloadMot(
     application by calling
     :func:`forcedimension_core.dhd.setForce()` and the friends.
 
-    :param SupportsPtr[c_ushort] cmds:
+    :param SupportsPtr cmds:
         An input buffer to store the motor command values.
 
     :param int mask:
@@ -872,7 +872,7 @@ def preloadMot(
 
 def gripperForceToMotor(
     f: float,
-    enc_wrist_grip: SupportsPtr[c_int],
+    enc_wrist_grip: SupportsPtr,
     out: c_ushort,
     ID: int = -1
 ) -> Tuple[int, int]:
@@ -924,12 +924,12 @@ def gripperForceToMotor(
     return _runtime._libdhd.dhdGripperForceToMotor(f, out, enc_wrist_grip.ptr, ID)
 
 
-def getEnc(out: SupportsPtr[c_int], mask: int = 0xff, ID: int = -1) -> int:
+def getEnc(out: SupportsPtr, mask: int = 0xff, ID: int = -1) -> int:
     """
     Get a selective list of encoder values. Particularly useful when using the
     generic controller directly, without a device model attached.
 
-    :param SupportsPtr[c_int] out:
+    :param SupportsPtr out:
         An output buffer to store the encoder values.
 
     :param int mask:
@@ -964,14 +964,14 @@ def getEnc(out: SupportsPtr[c_int], mask: int = 0xff, ID: int = -1) -> int:
     return _runtime._libdhd.dhdGetEnc(out.ptr, mask, ID)
 
 
-def getDeltaJointAngles(out: SupportsPtrs3[c_double], ID: int = -1) -> int:
+def getDeltaJointAngles(out: SupportsPtrs3, ID: int = -1) -> int:
     """
     Retrieve the joint angles (in [rad]) for the DELTA structure.
 
     :param int ID:
         Device ID (see :ref:`multiple_devices` section for details).
 
-    :param SupportsPtrs3[ctypes.c_double] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the joint angles (in [rad]) of the DELTA
         structure for axes 0, 1, and 2.
 
@@ -1004,7 +1004,7 @@ def getDeltaJointAngles(out: SupportsPtrs3[c_double], ID: int = -1) -> int:
     return _runtime._libdhd.dhdGetDeltaJointAngles(*out.ptrs, ID)
 
 
-def getDeltaJacobian(out: SupportsPtr[c_double], ID: int = -1) -> int:
+def getDeltaJacobian(out: SupportsPtr, ID: int = -1) -> int:
     """
     Retrieve the 3x3 jacobian matrix for the DELTA structure based on the
     current end-effector position. Please refer to your device user manual for
@@ -1013,7 +1013,7 @@ def getDeltaJacobian(out: SupportsPtr[c_double], ID: int = -1) -> int:
     :param int ID:
         Device ID (see :ref:`multiple_devices` section for details).
 
-    :param SupportsPtr[c_double] out:
+    :param SupportsPtr out:
         An output buffer to store the Jacobian.
 
     :raises AttributeError:
@@ -1041,7 +1041,7 @@ def getDeltaJacobian(out: SupportsPtr[c_double], ID: int = -1) -> int:
 
 def deltaJointAnglesToJacobian(
     joint_angles: Array[int, float],
-    out: SupportsPtr[c_double],
+    out: SupportsPtr,
     ID: int = -1,
 ) -> int:
     """
@@ -1056,7 +1056,7 @@ def deltaJointAnglesToJacobian(
     :param int ID:
         Device ID (see :ref:`multiple_devices` section for details).
 
-    :param SupportsPtr[c_double] out:
+    :param SupportsPtr out:
         An output buffer to store the Jacobian.
 
     :raises AttributeError:
@@ -1099,8 +1099,8 @@ def deltaJointAnglesToJacobian(
 
 def deltaJointTorquesExtrema(
     joint_angles: Array[int, float],
-    minq_out: SupportsPtr[c_double],
-    maxq_out: SupportsPtr[c_double],
+    minq_out: SupportsPtr,
+    maxq_out: SupportsPtr,
     ID: int = -1
 ) -> int:
     """
@@ -1113,11 +1113,11 @@ def deltaJointTorquesExtrema(
         Sequence of (j0, j1, j2) where ``j0``, ``j1``, and ``j2`` refer to the
         joint angles (in [rad]) for axis 0, 1, and 2, respectively.
 
-    :param SupportsPtrs3[ctypes.c_double] minq_out:
+    :param SupportsPtrs3 minq_out:
         An output buffer to store the minimum appliable DELTA joint torques
         about axes 0, 1, and 2 (in [Nm]).
 
-    :param SupportsPtrs3[ctypes.c_double] maxq_out:
+    :param SupportsPtrs3 maxq_out:
         An output buffer to store the maximum appliable DELTA joint torques
         about axes 0, 1, and 2 (in [Nm]).
 
@@ -1178,7 +1178,7 @@ def deltaJointTorquesExtrema(
 
 def deltaEncodersToJointAngles(
     enc: Array[int, int],
-    out: SupportsPtrs3[c_double],
+    out: SupportsPtrs3,
     ID: int = -1
 ) -> int:
     """
@@ -1192,7 +1192,7 @@ def deltaEncodersToJointAngles(
     :param int ID:
         Device ID (see :ref:`multiple_devices` section for details).
 
-    :param SupportsPtrs3[ctypes.c_double] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the DELTA joint angles (in [rad]) about axes
         0, 1, and 2.
 
@@ -1239,7 +1239,7 @@ def deltaEncodersToJointAngles(
 
 def deltaJointAnglesToEncoders(
     joint_angles: Array[int, float],
-    out: SupportsPtrs3[c_int],
+    out: SupportsPtrs3,
     ID: int = -1,
 ) -> int:
     """
@@ -1253,7 +1253,7 @@ def deltaJointAnglesToEncoders(
     :param int ID:
         Device ID (see :ref:`multiple_devices` section for details).
 
-    :param SupportsPtrs3[ctypes.c_double] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the DELTA encoder values.
 
     :raises ctypes.ArgumentError:
@@ -1289,14 +1289,14 @@ def deltaJointAnglesToEncoders(
     )
 
 
-def getWristJointAngles(out: SupportsPtrs3[c_double], ID: int = -1) -> int:
+def getWristJointAngles(out: SupportsPtrs3, ID: int = -1) -> int:
     """
     Retrieve the joint angles (in [rad]) for the wrist structure.
 
     :param int ID:
         Device ID (see :ref:`multiple_devices` section for details).
 
-    :param SupportsPtrs3[ctypes.c_double] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the wrist joint angles.
 
     :raises AttributeError:
@@ -1329,7 +1329,7 @@ def getWristJointAngles(out: SupportsPtrs3[c_double], ID: int = -1) -> int:
     return _runtime._libdhd.dhdGetWristJointAngles(*out.ptrs, ID)
 
 
-def getWristJacobian(out: SupportsPtr[c_double], ID: int = -1) -> int:
+def getWristJacobian(out: SupportsPtr, ID: int = -1) -> int:
     """
     Retrieve the 3x3 jacobian matrix for the wrist structure based on the
     current end-effector position. Please refer to your device user manual for
@@ -1338,7 +1338,7 @@ def getWristJacobian(out: SupportsPtr[c_double], ID: int = -1) -> int:
     :param int ID:
         Device ID (see :ref:`multiple_devices` section for details).
 
-    :param SupportsPtr[c_double] out:
+    :param SupportsPtr out:
         An output buffer to store the Jacobian.
 
     :raises AttributeError:
@@ -1366,7 +1366,7 @@ def getWristJacobian(out: SupportsPtr[c_double], ID: int = -1) -> int:
 
 def wristJointAnglesToJacobian(
     joint_angles: Array[int, float],
-    out: SupportsPtr[c_double],
+    out: SupportsPtr,
     ID: int = -1,
 ) -> int:
     """
@@ -1378,7 +1378,7 @@ def wristJointAnglesToJacobian(
         Sequence of ``(j0, j1, j2)`` where ``j0``, ``j1``, and ``j2`` refer to
         the joint angles for wrist axis 0, 1, and 2, respectively.
 
-    :param SupportsPtr[c_double] out:
+    :param SupportsPtr out:
         An output buffer to store the wrist jacobian.
 
     :param int ID:
@@ -1425,8 +1425,8 @@ def wristJointAnglesToJacobian(
 
 def wristJointTorquesExtrema(
     joint_angles: Array[int, float],
-    minq_out: SupportsPtr[c_double],
-    maxq_out: SupportsPtr[c_double],
+    minq_out: SupportsPtr,
+    maxq_out: SupportsPtr,
     ID: int = -1
 ) -> int:
     """
@@ -1438,11 +1438,11 @@ def wristJointTorquesExtrema(
         Sequence of ``(j0, j1, j2)`` where ``j0``, ``j1``, ``j2`` refer to the
         joint angles for wrist axes 0, 1, and 2, respectively.
 
-    :param SupportsPtrs3[ctypes.c_double] minq_out:
+    :param SupportsPtrs3 minq_out:
         An output buffer to store the minimum appliable DELTA joint torques
         about axes 0, 1, and 2 (in [Nm]).
 
-    :param SupportsPtrs3[ctypes.c_double] maxq_out:
+    :param SupportsPtrs3 maxq_out:
         An output buffer to store the maximum appliable DELTA joint torques
         about axes 0, 1, and 2 (in [Nm]).
 
@@ -1520,7 +1520,7 @@ _runtime._libdhd.dhdWristEncodersToJointAngles.restype = c_int
 
 def wristEncodersToJointAngles(
     enc: Array[int, int],
-    out: SupportsPtrs3[c_double],
+    out: SupportsPtrs3,
     ID: int = -1
 ) -> int:
     """
@@ -1531,7 +1531,7 @@ def wristEncodersToJointAngles(
         Sequence of (enc0, enc1, enc2) where ``enc0``, ``enc1``, and ``enc2``
         refer to encoder values on wrist axes 0, 1, and 2, respectively.
 
-    :param SupportsPtrs3[ctypes.c_double] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the joint angles (in [rad]) about wrist
         joint axes 0, 1, and 2.
 
@@ -1579,7 +1579,7 @@ def wristEncodersToJointAngles(
 
 def wristJointAnglesToEncoders(
     joint_angles: Array[int, float],
-    out: SupportsPtrs3[c_int],
+    out: SupportsPtrs3,
     ID: int = -1
 ) -> int:
     """
@@ -1639,7 +1639,7 @@ def wristJointAnglesToEncoders(
     )
 
 
-def getJointAngles(out: SupportsPtr[c_double], ID: int = -1) -> int:
+def getJointAngles(out: SupportsPtr, ID: int = -1) -> int:
     """
     Retrieve the joint angles (in [rad]) for all sensed degrees-of-freedom of
     the current device.
@@ -1647,7 +1647,7 @@ def getJointAngles(out: SupportsPtr[c_double], ID: int = -1) -> int:
     :param int ID:
         Device ID (see :ref:`multiple_devices` section for details).
 
-    :param SupportsPtr[c_double] out:
+    :param SupportsPtr out:
         An output buffer to store the joint angles (in [rad]) for all sensed
         degrees-of-freedom for the current device.
 
@@ -1689,12 +1689,12 @@ def getJointAngles(out: SupportsPtr[c_double], ID: int = -1) -> int:
     return _runtime._libdhd.dhdGetJointAngles(out.ptr, ID)
 
 
-def getJointVelocities(out: SupportsPtr[c_double], ID: int = -1) -> int:
+def getJointVelocities(out: SupportsPtr, ID: int = -1) -> int:
     """
     Retrieve the joint angle velocities (in [rad/s]) for all sensed
     degrees-of-freedom of the current device.
 
-    :param SupportsPtr[c_double] out:
+    :param SupportsPtr out:
         An output buffer to store the joint velocities (in [rad/s]) for all
         sensed degrees-of-freedom of the current device.
 
@@ -1729,7 +1729,7 @@ def getJointVelocities(out: SupportsPtr[c_double], ID: int = -1) -> int:
     return _runtime._libdhd.dhdGetJointVelocities(out.ptr, ID)
 
 
-def getEncVelocities(out: SupportsPtr[c_double], ID: int = -1) -> int:
+def getEncVelocities(out: SupportsPtr, ID: int = -1) -> int:
     """
     Retrieve the encoder angle velocities (in [inc/s]) for all sensed
     degrees-of-freedom of the current device.
@@ -1737,7 +1737,7 @@ def getEncVelocities(out: SupportsPtr[c_double], ID: int = -1) -> int:
     :param int ID:
         Device ID (see :ref:`multiple_devices` section for details).
 
-    :param SupportsPtr[c_double] out:
+    :param SupportsPtr out:
         An output buffer to store the encoder velocities (in [inc/s]) for all
         sensed degrees-of-freedom of the current device.
 
@@ -1770,8 +1770,8 @@ def getEncVelocities(out: SupportsPtr[c_double], ID: int = -1) -> int:
 
 
 def jointAnglesToIntertiaMatrix(
-    joint_angles: SupportsPtr[c_double],
-    out: SupportsPtr[c_double],
+    joint_angles: SupportsPtr,
+    out: SupportsPtr,
     ID: int = -1,
 ) -> int:
     """
@@ -1782,11 +1782,11 @@ def jointAnglesToIntertiaMatrix(
     :param int ID:
         Device ID (see :ref:`multiple_devices` section for details).
 
-    :param SupportsPtr[c_double] out:
+    :param SupportsPtr out:
         An array of joint angles (in [rad]) containing joint angles for all
         degrees of freedom.
 
-    :param SupportsPtr[c_double] out:
+    :param SupportsPtr out:
         An output buffer for the 6x6 inertia matrix.
 
     :raises AttributeError:
@@ -1823,8 +1823,8 @@ def jointAnglesToIntertiaMatrix(
 
 
 def jointAnglesToGravityJointTorques(
-    joint_angles: SupportsPtr[c_double],
-    out: SupportsPtr[c_double],
+    joint_angles: SupportsPtr,
+    out: SupportsPtr,
     mask: int = 0xff,
     ID: int = -1,
 ) -> int:
@@ -1839,11 +1839,11 @@ def jointAnglesToGravityJointTorques(
     :param int mask:
         Bitwise mask of which joint torques should be computed.
 
-    :param SupportsPtr[c_double] joint_angles:
+    :param SupportsPtr joint_angles:
         Output buffer for the joint torques required to provide gravity
         compensation (in [Nm]).
 
-    :param SupportsPtr[c_double] out:
+    :param SupportsPtr out:
         Output buffer for the joint torques required to provide gravity
         compensation (in [Nm]).
 

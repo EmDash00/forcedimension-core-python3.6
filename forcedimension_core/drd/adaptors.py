@@ -25,7 +25,7 @@ class TrajectoryGenParams(pydantic.BaseModel):
             f"{' (default)' if self.jerk == default_jerk else ''}"
         )
 
-    @pydantic.field_validator('vmax')
+    @pydantic.validator('vmax')
     @classmethod
     def validate_vmax(cls, val: float):
         if val < 0:
@@ -33,7 +33,7 @@ class TrajectoryGenParams(pydantic.BaseModel):
 
         return val
 
-    @pydantic.field_validator('amax')
+    @pydantic.validator('amax')
     @classmethod
     def validate_amax(cls, val: float):
         if val < 0:
@@ -41,7 +41,7 @@ class TrajectoryGenParams(pydantic.BaseModel):
 
         return val
 
-    @pydantic.field_validator('jerk')
+    @pydantic.validator('jerk')
     @classmethod
     def validate_jerk(cls, val: float):
         if val < 0:

@@ -16,11 +16,13 @@ v = [0.0, 0.0, 0.0]
 f = [0.0, 0.0, 0.0]
 
 # Try to open the first available device
-if (ID := dhd.open()) == -1:
+ID = dhd.open()
+if ID == -1:
     print(f"Error: {dhd.errorGetLastStr()}")
     sys.exit(1)
 
-if (name := dhd.getSystemName()) is not None:
+name = dhd.getSystemName()
+if name is not None:
     print(isinstance(name, str))  # prints "True"
     print(name)
 
@@ -62,7 +64,8 @@ try:
                 op='forcedimension_core.dhd.setForce', ID=ID
             )
 
-        if (btn_state := dhd.getButton(index=0, ID=ID)) == -1:
+        btn_state = dhd.getButton(index=0, ID=ID)
+        if btn_state == -1:
             raise fdsdk.util.errno_to_exception(dhd.errorGetLast())(
                 op='forcedimension_core.dhd.getButton', ID=ID
             )

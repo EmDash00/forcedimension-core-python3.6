@@ -6,13 +6,13 @@ from forcedimension_core.typing import (
 )
 
 
-def getPosition(out: SupportsPtrs3[c_double], ID: int = -1) -> int:
+def getPosition(out: SupportsPtrs3, ID: int = -1) -> int:
     """
     Retrieve the position of the end-effector about the X, Y, and
     Z axes. Please refer to your device user manual for more
     information on your device coordinate system.
 
-    :param SupportsPtrs3[ctypes.c_double] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the position of the end-effector
         (in [m]).
 
@@ -49,13 +49,13 @@ def getPosition(out: SupportsPtrs3[c_double], ID: int = -1) -> int:
     return _runtime._libdhd.dhdGetPosition(*out.ptrs, ID)
 
 
-def getForce(out: SupportsPtrs3[c_double], ID: int = -1) -> int:
+def getForce(out: SupportsPtrs3, ID: int = -1) -> int:
     """
     Retrieve the force vector applied to the end-effector (in [N])
     about the X, Y, and Z axes Please refer to your device user
     manual for more information on your device coordinate system.
 
-    :param SupportsPtrs3[ctypes.c_double] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the applied forces on the
         end-effector (in [N]).
 
@@ -98,7 +98,7 @@ def getForce(out: SupportsPtrs3[c_double], ID: int = -1) -> int:
 
 
 def getOrientationRad(
-    out: SupportsPtrs3[c_double], ID: int = -1
+    out: SupportsPtrs3, ID: int = -1
 ) -> int:
     """
     For devices with a wrist structure, retrieve individual angle
@@ -122,7 +122,7 @@ def getOrientationRad(
     information on your device coordinate system.
 
 
-    :param SupportsPtrs3[ctypes.c_double] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the joint angles (in [rad]).
 
     :param int ID:
@@ -163,7 +163,7 @@ def getOrientationRad(
 
 
 def getOrientationDeg(
-    out: SupportsPtrs3[c_double], ID: int = -1
+    out: SupportsPtrs3, ID: int = -1
 ) -> int:
     """
     For devices with a wrist structure, retrieve individual angle
@@ -187,7 +187,7 @@ def getOrientationDeg(
     information on your device coordinate system.
 
 
-    :param SupportsPtrs3[ctypes.c_double] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the joint angles (in [deg]).
 
     :param int ID:
@@ -228,8 +228,8 @@ def getOrientationDeg(
 
 
 def getPositionAndOrientationRad(
-    p_out: SupportsPtrs3[c_double],
-    o_out: SupportsPtrs3[c_double],
+    p_out: SupportsPtrs3,
+    o_out: SupportsPtrs3,
     ID: int = -1
 ) -> int:
     """
@@ -259,10 +259,10 @@ def getPositionAndOrientationRad(
          Device ID (see :ref:`multiple_devices` section for
          details).
 
-    :param SupportsPtrs3[ctypes.c_double] p_out:
+    :param SupportsPtrs3 p_out:
         An output buffer to store the position (in [m]).
 
-    :param SupportsPtrs3[ctypes.c_double] o_out:
+    :param SupportsPtrs3 o_out:
         An output buffer to store the joint angles (in [rad]).
 
     :raises AttributeError:
@@ -311,8 +311,8 @@ def getPositionAndOrientationRad(
 
 
 def getPositionAndOrientationDeg(
-    p_out: SupportsPtrs3[c_double],
-    o_out: SupportsPtrs3[c_double],
+    p_out: SupportsPtrs3,
+    o_out: SupportsPtrs3,
     ID: int = -1
 ) -> int:
     """
@@ -343,10 +343,10 @@ def getPositionAndOrientationDeg(
          Device ID (see :ref:`multiple_devices` section for
          details).
 
-    :param SupportsPtrs3[ctypes.c_double] p_out:
+    :param SupportsPtrs3 p_out:
         An output buffer to store the position (in [m]).
 
-    :param SupportsPtrs3[ctypes.c_double] o_out:
+    :param SupportsPtrs3 o_out:
         An output buffer to store the joint angles (in [rad]).
 
     :raises AttributeError:
@@ -395,8 +395,8 @@ def getPositionAndOrientationDeg(
 
 
 def getPositionAndOrientationFrame(
-    p_out: SupportsPtrs3[c_double],
-    matrix_out: SupportsPtr[c_double],
+    p_out: SupportsPtrs3,
+    matrix_out: SupportsPtr,
     ID: int = -1
 ) -> int:
     """
@@ -466,8 +466,8 @@ def getPositionAndOrientationFrame(
 
 
 def getForceAndTorque(
-    f_out: SupportsPtrs3[c_double],
-    t_out: SupportsPtrs3[c_double],
+    f_out: SupportsPtrs3,
+    t_out: SupportsPtrs3,
     ID: int = -1
 ) -> int:
     """
@@ -480,11 +480,11 @@ def getForceAndTorque(
          Device ID (see :ref:`multiple_devices` section for
          details).
 
-    :param SupportsPtrs3[ctypes.c_double] f_out:
+    :param SupportsPtrs3 f_out:
         An output buffer to store the applied forces on the
         end-effector (in [N]).
 
-    :param SupportsPtrs3[ctypes.c_double] t_out:
+    :param SupportsPtrs3 t_out:
         An output buffer to store the applied torques on the
         end-effector (in [Nm]).
 
@@ -529,7 +529,7 @@ def getForceAndTorque(
     return _runtime._libdhd.dhdGetForceAndTorque(*f_out.ptrs, *t_out.ptrs, ID)
 
 
-def getOrientationFrame(out: SupportsPtr[c_double], ID: int = -1) -> int:
+def getOrientationFrame(out: SupportsPtr, ID: int = -1) -> int:
     """
     Retrieve the rotation matrix of the wrist structure. The
     identity matrix is returned for devices that do not support
@@ -566,7 +566,7 @@ def getOrientationFrame(out: SupportsPtr[c_double], ID: int = -1) -> int:
 
 
 def getGripperThumbPos(
-    out: SupportsPtrs3[c_double], ID: int = -1
+    out: SupportsPtrs3, ID: int = -1
 ) -> int:
     """
     Read the position (in [m]) of thumb rest location about the
@@ -582,7 +582,7 @@ def getGripperThumbPos(
          Device ID (see :ref:`multiple_devices` section for
          details).
 
-    :param SupportsPtrs3[ctypes.c_double] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the grippper thumb position
         (in [m]).
 
@@ -614,7 +614,7 @@ def getGripperThumbPos(
 
 
 def getGripperFingerPos(
-    out: SupportsPtrs3[c_double], ID: int = -1
+    out: SupportsPtrs3, ID: int = -1
 ) -> int:
     """
     Read the position (in [m]) of forefinger rest location about
@@ -630,7 +630,7 @@ def getGripperFingerPos(
          Device ID (see :ref:`multiple_devices` section for
          details).
 
-    :param SupportsPtrs3[ctypes.c_double] out:
+    :param SupportsPtrs3 out:
         An output buffer to store the gripper finger position
         (in [m]).
 
@@ -662,8 +662,8 @@ def getGripperFingerPos(
 
 
 def getForceAndTorqueAndGripperForce(
-    f_out: SupportsPtrs3[c_double],
-    t_out: SupportsPtrs3[c_double],
+    f_out: SupportsPtrs3,
+    t_out: SupportsPtrs3,
     fg_out: c_double,
     ID: int = -1
 ) -> int:
@@ -676,11 +676,11 @@ def getForceAndTorqueAndGripperForce(
          Device ID (see :ref:`multiple_devices` section for
          details).
 
-    :param SupportsPtrs3[ctypes.c_double] f_out:
+    :param SupportsPtrs3 f_out:
         An output buffer to store the applied forces on the
         end-effector (in [N]).
 
-    :param SupportsPtrs3[ctypes.c_double] t_out:
+    :param SupportsPtrs3 t_out:
         An output buffer to store the applied torques on the
         end-effector (in [Nm]).
 
@@ -730,7 +730,7 @@ def getForceAndTorqueAndGripperForce(
     return err
 
 
-def getLinearVelocity(out: SupportsPtrs3[c_double], ID: int = -1) -> int:
+def getLinearVelocity(out: SupportsPtrs3, ID: int = -1) -> int:
     """
     Retrieve the estimated instanteous linear velocity (in [m/s]).
 
@@ -781,7 +781,7 @@ def getLinearVelocity(out: SupportsPtrs3[c_double], ID: int = -1) -> int:
 
 
 def getAngularVelocityRad(
-    out: SupportsPtrs3[c_double], ID: int = -1
+    out: SupportsPtrs3, ID: int = -1
 ) -> int:
     """
     Retrieve the estimated angular velocity (in [rad/s]).
@@ -836,7 +836,7 @@ def getAngularVelocityRad(
 
 
 def getAngularVelocityDeg(
-    out: SupportsPtrs3[c_double], ID: int = -1
+    out: SupportsPtrs3, ID: int = -1
 ) -> int:
     """
     Retrieve the estimated angular velocity (in [deg/s]).

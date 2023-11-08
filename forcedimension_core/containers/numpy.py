@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import ctypes
 from ctypes import c_double, c_int, c_ushort
 import os
@@ -10,16 +8,11 @@ try:
         raise ModuleNotFoundError
 
     import numpy as np
-    import numpy.typing as npt
 except ModuleNotFoundError as ex:
     raise ImportError(
         "Optional dependency numpy as not found. NumPy containers not "
         "available. Use the basic containers instead."
     ) from ex
-
-import pydantic as pyd
-import pydantic_core as pyd_core
-from pydantic_core import core_schema as _core_schema
 
 from forcedimension_core.constants import MAX_DOF
 from forcedimension_core.typing import (
@@ -36,7 +29,7 @@ class Vec3(np.ndarray):
     functions which get orientation.
     """
 
-    def __new__(cls, data: npt.ArrayLike = (0., 0., 0.)):
+    def __new__(cls, data = (0., 0., 0.)):
         arr = np.ascontiguousarray(data, dtype=c_double).view(cls)
 
         if len(arr) != 3:
@@ -54,18 +47,15 @@ class Vec3(np.ndarray):
         )
 
     @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: pyd.GetCoreSchemaHandler
-    ) -> pyd_core.CoreSchema:
-        return _core_schema.no_info_plain_validator_function(
-            cls,
-            serialization=_core_schema.plain_serializer_function_ser_schema(
-                lambda arr: arr.tolist()
-            )
-        )
+    def __get_validators__(cls):
+        yield cls.validate
+
+    @classmethod
+    def validate(cls, value):
+        return cls(value)
 
     @property
-    def ptr(self) -> c_double_ptr:
+    def ptr(self):
         """
         A pointer to the front of the array.
         """
@@ -73,7 +63,7 @@ class Vec3(np.ndarray):
         return self._ptrs[0]
 
     @property
-    def ptrs(self) -> Tuple[c_double_ptr, c_double_ptr, c_double_ptr]:
+    def ptrs(self):
         """
         A tuple of pointers to each element of the array in order.
         """
@@ -125,7 +115,7 @@ class Enc3(np.ndarray):
     structure.
     """
 
-    def __new__(cls, data: npt.ArrayLike = (0., 0., 0.)):
+    def __new__(cls, data = (0., 0., 0.)):
         arr = np.ascontiguousarray(data, dtype=c_int).view(cls)
 
         if len(arr) != 3:
@@ -142,19 +132,8 @@ class Enc3(np.ndarray):
             ctypes.cast(self.ctypes.data + 2 * self.itemsize, c_int_ptr)
         )
 
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: pyd.GetCoreSchemaHandler
-    ) -> pyd_core.CoreSchema:
-        return _core_schema.no_info_plain_validator_function(
-            cls,
-            serialization=_core_schema.plain_serializer_function_ser_schema(
-                lambda arr: arr.tolist()
-            )
-        )
-
     @property
-    def ptr(self) -> c_int_ptr:
+    def ptr(self):
         """
         A pointer to the front of the array.
         """
@@ -162,7 +141,7 @@ class Enc3(np.ndarray):
         return self._ptrs[0]
 
     @property
-    def ptrs(self) -> Tuple[c_int_ptr, c_int_ptr, c_int_ptr]:
+    def ptrs(self):
         """
         A tuple of pointers to each element of the array in order.
         """
@@ -179,7 +158,7 @@ class Mot3(np.ndarray):
     commands for each axis of the delta or wrist structure.
     """
 
-    def __new__(cls, data: npt.ArrayLike = (0., 0., 0.)):
+    def __new__(cls, data = (0., 0., 0.)):
         arr = np.ascontiguousarray(data, dtype=c_ushort).view(cls)
 
         if len(arr) != 3:
@@ -196,19 +175,8 @@ class Mot3(np.ndarray):
             ctypes.cast(self.ctypes.data + 2 * self.itemsize, c_ushort_ptr)
         )
 
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: pyd.GetCoreSchemaHandler
-    ) -> pyd_core.CoreSchema:
-        return _core_schema.no_info_plain_validator_function(
-            cls,
-            serialization=_core_schema.plain_serializer_function_ser_schema(
-                lambda arr: arr.tolist()
-            )
-        )
-
     @property
-    def ptr(self) -> c_ushort_ptr:
+    def ptr(self):
         """
         A pointer to the front of the array.
         """
@@ -216,7 +184,7 @@ class Mot3(np.ndarray):
         return self._ptrs[0]
 
     @property
-    def ptrs(self) -> Tuple[c_ushort_ptr, c_ushort_ptr, c_ushort_ptr]:
+    def ptrs(self):
         """
         A tuple of pointers to each element of the array in order.
         """
@@ -231,7 +199,7 @@ class Enc4(np.ndarray):
     convert gripper motor commands to forces and vice versa.
     """
 
-    def __new__(cls, data: npt.ArrayLike = (0., 0., 0., 0.)):
+    def __new__(cls, data = (0., 0., 0., 0.)):
         arr = np.ascontiguousarray(data, dtype=c_int).view(cls)
 
         if len(arr) != 4:
@@ -244,19 +212,8 @@ class Enc4(np.ndarray):
 
         self._ptr = ctypes.cast(self.ctypes.data, c_int_ptr)
 
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: pyd.GetCoreSchemaHandler
-    ) -> pyd_core.CoreSchema:
-        return _core_schema.no_info_plain_validator_function(
-            cls,
-            serialization=_core_schema.plain_serializer_function_ser_schema(
-                lambda arr: arr.tolist()
-            )
-        )
-
     @property
-    def ptr(self) -> c_int_ptr:
+    def ptr(self):
         """
         A pointer to the front of the underlying contiguous data.
         """
@@ -292,19 +249,8 @@ class DOFInt(np.ndarray):
             self.ctypes.data + 7 * self.itemsize, c_int_ptr
         ).contents
 
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: pyd.GetCoreSchemaHandler
-    ) -> pyd_core.CoreSchema:
-        return _core_schema.no_info_plain_validator_function(
-            cls,
-            serialization=_core_schema.plain_serializer_function_ser_schema(
-                lambda arr: arr.tolist()
-            )
-        )
-
     @property
-    def ptr(self) -> c_int_ptr:
+    def ptr(self):
         return self._ptr
 
     @property
@@ -367,19 +313,8 @@ class DOFMotor(np.ndarray):
 
         self._ptr = ctypes.cast(self.ctypes.data, c_ushort_ptr)
 
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: pyd.GetCoreSchemaHandler
-    ) -> pyd_core.CoreSchema:
-        return _core_schema.no_info_plain_validator_function(
-            cls,
-            serialization=_core_schema.plain_serializer_function_ser_schema(
-                lambda arr: arr.tolist()
-            )
-        )
-
     @property
-    def ptr(self) -> c_ushort_ptr:
+    def ptr(self):
         return self._ptr
 
 
@@ -392,7 +327,7 @@ class DOFFloat(np.ndarray):
     """
 
     def __new__(
-        cls, data: npt.ArrayLike = tuple(0. for _ in range(MAX_DOF))
+        cls, data = tuple(0. for _ in range(MAX_DOF))
     ):
         arr = np.ascontiguousarray(data, dtype=c_double).view(cls)
 
@@ -412,19 +347,8 @@ class DOFFloat(np.ndarray):
             self.ctypes.data + 7 * self.itemsize, c_double_ptr
         ).contents
 
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: pyd.GetCoreSchemaHandler
-    ) -> pyd_core.CoreSchema:
-        return _core_schema.no_info_plain_validator_function(
-            cls,
-            serialization=_core_schema.plain_serializer_function_ser_schema(
-                lambda arr: arr.tolist()
-            )
-        )
-
     @property
-    def ptr(self) -> c_double_ptr:
+    def ptr(self):
         """
         A pointer to the front of the underlying contiguous data.
         """
@@ -466,7 +390,7 @@ class Mat3x3(np.ndarray):
     a 3x3 coordinate frame matrix.
     """
 
-    def __new__(cls, data: npt.ArrayLike = tuple(0. for _ in range(9))):
+    def __new__(cls, data = tuple(0. for _ in range(9))):
         arr = np.ascontiguousarray(data, dtype=c_double)
 
         if arr.size != 9:
@@ -479,19 +403,8 @@ class Mat3x3(np.ndarray):
 
         self._ptr = ctypes.cast(self.ctypes.data, c_double_ptr)
 
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: pyd.GetCoreSchemaHandler
-    ) -> pyd_core.CoreSchema:
-        return _core_schema.no_info_plain_validator_function(
-            cls,
-            serialization=_core_schema.plain_serializer_function_ser_schema(
-                lambda arr: arr.tolist()
-            )
-        )
-
     @property
-    def ptr(self) -> c_double_ptr:
+    def ptr(self):
         """
         A pointer to the front of the underlying contiguous data.
         """
@@ -506,7 +419,7 @@ class Mat6x6(np.ndarray):
     inertia matrix.
     """
 
-    def __new__(cls, data: npt.ArrayLike = tuple(0. for _ in range(36))):
+    def __new__(cls, data = tuple(0. for _ in range(36))):
         arr = np.ascontiguousarray(data, dtype=c_double)
 
         if arr.size != 36:
@@ -519,19 +432,8 @@ class Mat6x6(np.ndarray):
 
         self._ptr = ctypes.cast(self.ctypes.data, c_double_ptr)
 
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: pyd.GetCoreSchemaHandler
-    ) -> pyd_core.CoreSchema:
-        return _core_schema.no_info_plain_validator_function(
-            cls,
-            serialization=_core_schema.plain_serializer_function_ser_schema(
-                lambda arr: arr.tolist()
-            )
-        )
-
     @property
-    def ptr(self) -> c_double_ptr:
+    def ptr(self):
         """
         A pointer to the front of the underlying contiguous data.
         """

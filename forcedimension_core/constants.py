@@ -1,5 +1,6 @@
 from enum import IntEnum
-from typing import Final, Literal, Tuple
+from typing import Tuple
+from typing_extensions import Final, Literal
 
 MAX_DOF: Final[int] = 8   #: Maximum number of DOF a device can have
 MAX_BUTTONS: Final[int] = 32  #: Maximum number of buttons a device can have

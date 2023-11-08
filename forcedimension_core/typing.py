@@ -1,9 +1,10 @@
 import ctypes as ct
-from ctypes import c_double, c_int, c_ubyte, c_uint, c_ushort
+from ctypes import POINTER, c_double, c_int, c_ubyte, c_uint, c_ushort
 from typing import (
-    TYPE_CHECKING, Container, Generic, Literal, Protocol, Sized, Tuple,
-    TypeVar, Union
+    TYPE_CHECKING, Any, Container, Sized, Tuple, TypeVar, Union
 )
+
+from typing_extensions import Literal, Protocol
 
 
 _KT_contra = TypeVar("_KT_contra", contravariant=True)
@@ -14,7 +15,7 @@ _VT_co = TypeVar("_VT_co", covariant=True)
 ComModeStr = Literal['sync', 'async', 'virtual', 'network']
 
 
-class Array(Sized, Container[_VT_co], Protocol[_KT_contra, _VT_co]):
+class Array(Sized, Protocol[_KT_contra, _VT_co]):
     """
     A set of values (all the same type) indexed by keys
     (all the same type).
@@ -58,43 +59,23 @@ else:
 
 CBoolLike = Union[bool, int]
 
-c_double_ptr = Pointer[c_double]
-c_ubyte_ptr = Pointer[c_ubyte]
-c_ushort_ptr = Pointer[c_ushort]
-c_int_ptr = Pointer[c_int]
-c_uint_ptr = Pointer[c_uint]
+c_double_ptr = POINTER(c_double)
+c_ubyte_ptr = POINTER(c_ubyte)
+c_ushort_ptr = POINTER(c_ushort)
+c_int_ptr = POINTER(c_int)
+c_uint_ptr = POINTER(c_uint)
 
 
-class SupportsPtr(Protocol, Generic[CType]):
-    """
-    A type which supports direct memory addressing of the front of a contiguous
-    array.
-    """
-
+class SupportsPtr(Protocol):
     @property
-    def ptr(self) -> Pointer[CType]:
-        """
-        A pointer to the front of a contiguous section of data.
-        """
-
+    def ptr(self) -> Any:
         ...
 
 
-class SupportsPtrs3(Protocol, Generic[CType]):
-    """
-    A type which supports direct memory addressing of its stored values.
-    """
-
+class SupportsPtrs3(Protocol):
     @property
-    def ptrs(self) -> Tuple[
-        Pointer[CType], Pointer[CType], Pointer[CType]
-    ]:
-        """
-        A tuple of 3 pointers to sequentially ordered set of 3 values.
-        """
-
+    def ptrs(self) -> Any:
         ...
-
 
 #: Represents a tuple of integers, one for each DOF.
 IntDOFTuple = Tuple[int, int, int, int, int, int, int, int]

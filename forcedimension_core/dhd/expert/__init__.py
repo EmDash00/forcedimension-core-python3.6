@@ -1,8 +1,7 @@
 import ctypes as ct
 from ctypes import c_byte, c_char_p, c_double, c_int, c_ubyte, c_uint, c_ushort
 from typing import Tuple
-
-import typing_extensions
+import warnings
 
 import forcedimension_core.runtime as _runtime
 from forcedimension_core.constants import MAX_DOF, ComMode, DeviceType
@@ -3543,11 +3542,6 @@ _runtime._libdhd.dhdDeltaGravityJointTorques.argtypes = [
 _runtime._libdhd.dhdDeltaGravityJointTorques.restype = c_int
 
 
-@typing_extensions.deprecated(
-    "This function is deprecated, please use "
-    "forcedimension_core.dhd.jointAnglesToGravityJointTorques() "
-    "instead."
-)
 def deltaGravityJointTorques(
     joint_angles: Array[int, float],
     out: MutableArray[int, float],
@@ -3600,6 +3594,12 @@ def deltaGravityJointTorques(
         0 on success, -1 otherwise.
     """
 
+    warnings.warn(
+        "This function is deprecated, please use "
+        "dhd.jointAnglesToGravityJointTorques() instead.",
+        DeprecationWarning, stacklevel=2
+    )
+
     q0 = c_double()
     q1 = c_double()
     q2 = c_double()
@@ -3625,11 +3625,6 @@ _runtime._libdhd.dhdWristGravityJointTorques.argtypes = [
 _runtime._libdhd.dhdWristGravityJointTorques.restype = c_int
 
 
-@typing_extensions.deprecated(
-    "This function is deprecated, please use "
-    "forcedimension_core.dhd.jointAnglesToGravityJointTorques() "
-    "instead.",
-)
 def wristGravityJointTorques(
     joint_angles: Array[int, float],
     out: MutableArray[int, float],
@@ -3681,6 +3676,12 @@ def wristGravityJointTorques(
     :returns:
         0 on success, -1 otherwise
     """
+
+    warnings.warn(
+        "This function is deprecated, please use "
+        "dhd.jointAnglesToGravityJointTorques() instead.",
+        DeprecationWarning, stacklevel=2
+    )
 
     q0 = c_double()
     q1 = c_double()

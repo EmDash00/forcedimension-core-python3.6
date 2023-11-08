@@ -1,15 +1,9 @@
-from __future__ import annotations
-
 import ctypes as ct
 from array import array
 from ctypes import c_int
 import os
 from typing import Any, Iterable, NamedTuple, Tuple
 from typing_extensions import overload
-
-import pydantic as pyd
-import pydantic_core as pyd_core
-from pydantic_core import core_schema as _core_schema
 
 from forcedimension_core.constants import MAX_DOF, MAX_STATUS
 from forcedimension_core.typing import (
@@ -20,7 +14,7 @@ try:
     if os.environ.get('__fdsdk__unittest_opt_has_numpy__', 'True') == 'False':
         raise ImportError
 
-    import forcedimension_core.containers.numpy as numpy
+    from . import numpy
 except ImportError:
     pass
 
@@ -47,7 +41,7 @@ class Status(ct.Structure):
     """
 
     @overload
-    def __init__(self, status: Status):
+    def __init__(self, status: "Status"):
         ...
 
     @overload
@@ -80,24 +74,8 @@ class Status(ct.Structure):
 
         self._ptr = ct.cast(ct.pointer(self), c_int_ptr)
 
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: pyd.GetCoreSchemaHandler
-    ) -> pyd_core.CoreSchema:
-        return _core_schema.no_info_plain_validator_function(
-            cls,
-            serialization=_core_schema.plain_serializer_function_ser_schema(
-                lambda status: {
-                    field: getattr(status, field)
-                    for field in map(
-                        lambda fields: fields[0], status._fields_[:-1]
-                    )
-                }
-            )
-        )
-
     @property
-    def ptr(self) -> Pointer[c_int]:
+    def ptr(self):
         return self._ptr
 
     def __len__(self) -> int:
@@ -284,18 +262,15 @@ class Vec3(array):
         )
 
     @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: pyd.GetCoreSchemaHandler
-    ) -> pyd_core.CoreSchema:
-        return _core_schema.no_info_plain_validator_function(
-            cls,
-            serialization=_core_schema.plain_serializer_function_ser_schema(
-                lambda arr: arr.tolist()
-            )
-        )
+    def __get_validators__(cls):
+        yield cls.validate
+
+    @classmethod
+    def validate(cls, value):
+        return cls(value)
 
     @property
-    def ptr(self) -> c_double_ptr:
+    def ptr(self):
         """
         A pointer to the front of the array.
         """
@@ -303,7 +278,7 @@ class Vec3(array):
         return self._ptrs[0]
 
     @property
-    def ptrs(self) -> Tuple[c_double_ptr, c_double_ptr, c_double_ptr]:
+    def ptrs(self):
         """
         A tuple of pointers to each element of the array in order.
         """
@@ -377,19 +352,8 @@ class Enc3(array):
             ct.cast(ptr + 2 * self.itemsize, c_int_ptr),
         )
 
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: pyd.GetCoreSchemaHandler
-    ) -> pyd_core.CoreSchema:
-        return _core_schema.no_info_plain_validator_function(
-            cls,
-            serialization=_core_schema.plain_serializer_function_ser_schema(
-                lambda arr: arr.tolist()
-            )
-        )
-
     @property
-    def ptr(self) -> c_int_ptr:
+    def ptr(self):
         """
         A pointer to the front of the array.
         """
@@ -397,7 +361,7 @@ class Enc3(array):
         return self._ptrs[0]
 
     @property
-    def ptrs(self) -> Tuple[c_int_ptr, c_int_ptr, c_int_ptr]:
+    def ptrs(self):
         """
         A tuple of pointers to each element of the array in order.
         """
@@ -435,19 +399,8 @@ class Mot3(array):
             ct.cast(ptr + 2 * self.itemsize, c_ushort_ptr),
         )
 
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: pyd.GetCoreSchemaHandler
-    ) -> pyd_core.CoreSchema:
-        return _core_schema.no_info_plain_validator_function(
-            cls,
-            serialization=_core_schema.plain_serializer_function_ser_schema(
-                lambda arr: arr.tolist()
-            )
-        )
-
     @property
-    def ptr(self) -> c_ushort_ptr:
+    def ptr(self):
         """
         A pointer to the front of the array.
         """
@@ -455,7 +408,7 @@ class Mot3(array):
         return self._ptrs[0]
 
     @property
-    def ptrs(self) -> Tuple[c_ushort_ptr, c_ushort_ptr, c_ushort_ptr]:
+    def ptrs(self):
         """
         A tuple of pointers to each element of the array in order.
         """
@@ -485,19 +438,8 @@ class Enc4(array):
     def __init__(self, *args, **kwargs):
         self._ptr = ct.cast(self.buffer_info()[0], c_int_ptr)
 
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: pyd.GetCoreSchemaHandler
-    ) -> pyd_core.CoreSchema:
-        return _core_schema.no_info_plain_validator_function(
-            cls,
-            serialization=_core_schema.plain_serializer_function_ser_schema(
-                lambda arr: arr.tolist()
-            )
-        )
-
     @property
-    def ptr(self) -> c_int_ptr:
+    def ptr(self):
         """
         A pointer to the front of the underlying contiguous data.
         """
@@ -528,19 +470,8 @@ class DOFInt(array):
     def __init__(self, *args, **kwargs):
         self._ptr = ct.cast(self.buffer_info()[0], c_int_ptr)
 
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: pyd.GetCoreSchemaHandler
-    ) -> pyd_core.CoreSchema:
-        return _core_schema.no_info_plain_validator_function(
-            cls,
-            serialization=_core_schema.plain_serializer_function_ser_schema(
-                lambda arr: arr.tolist()
-            )
-        )
-
     @property
-    def ptr(self) -> c_int_ptr:
+    def ptr(self):
         """
         A pointer to the front of the underlying contiguous data.
         """
@@ -571,19 +502,8 @@ class DOFMotor(array):
     def __init__(self, *args, **kwargs):
         self._ptr = ct.cast(self.buffer_info()[0], c_ushort_ptr)
 
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: pyd.GetCoreSchemaHandler
-    ) -> pyd_core.CoreSchema:
-        return _core_schema.no_info_plain_validator_function(
-            cls,
-            serialization=_core_schema.plain_serializer_function_ser_schema(
-                lambda arr: arr.tolist()
-            )
-        )
-
     @property
-    def ptr(self) -> c_ushort_ptr:
+    def ptr(self):
         """
         A pointer to the front of the underlying contiguous data.
         """
@@ -614,19 +534,8 @@ class DOFFloat(array):
     def __init__(self, *args, **kwargs):
         self._ptr = ct.cast(self.buffer_info()[0], c_double_ptr)
 
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: pyd.GetCoreSchemaHandler
-    ) -> pyd_core.CoreSchema:
-        return _core_schema.no_info_plain_validator_function(
-            cls,
-            serialization=_core_schema.plain_serializer_function_ser_schema(
-                lambda arr: arr.tolist()
-            )
-        )
-
     @property
-    def ptr(self) -> c_double_ptr:
+    def ptr(self):
         """
         A pointer to the front of the underlying contiguous data.
         """
@@ -687,19 +596,8 @@ class Mat3x3(array):
 
         super().__setitem__(3 * i + j, value)
 
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: pyd.GetCoreSchemaHandler
-    ) -> pyd_core.CoreSchema:
-        return _core_schema.no_info_plain_validator_function(
-            cls,
-            serialization=_core_schema.plain_serializer_function_ser_schema(
-                lambda arr: [[arr[i, j] for j in range(3)] for i in range(3)]
-            )
-        )
-
     @property
-    def ptr(self) -> c_double_ptr:
+    def ptr(self):
         """
         A pointer to the front of the underlying contiguous data.
         """
@@ -760,19 +658,8 @@ class Mat6x6(array):
 
         super().__setitem__(6 * i + j, value)
 
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: pyd.GetCoreSchemaHandler
-    ) -> pyd_core.CoreSchema:
-        return _core_schema.no_info_plain_validator_function(
-            cls,
-            serialization=_core_schema.plain_serializer_function_ser_schema(
-                lambda arr: [[arr[i, j] for j in range(6)] for i in range(6)]
-            )
-        )
-
     @property
-    def ptr(self) -> c_double_ptr:
+    def ptr(self):
         """
         A pointer to the front of the underlying contiguous data.
         """
