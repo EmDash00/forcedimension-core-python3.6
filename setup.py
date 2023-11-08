@@ -15,6 +15,6 @@ if __name__ == '__main__':
             "pydantic>=1.9.2, <2",
         ],
         extras_require = {
-            'numpy': "numpy==1.16.4, <2",
+            'numpy': "numpy>=1.16.4, <2",
         }
     )
