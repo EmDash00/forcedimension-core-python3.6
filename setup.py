@@ -13,6 +13,8 @@ if __name__ == '__main__':
             "wheel",
             "typing_extensions >= 4.1.1, <5",
             "pydantic>=1.9.2, <2",
-            "numpy>=1.16.4, <2",
         ],
+        extras_require = {
+            'numpy': "numpy>=1.16.4, <2",
+        }
     )
